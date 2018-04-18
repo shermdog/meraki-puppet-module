@@ -22,6 +22,8 @@ module Puppet::Util::NetworkDevice::Cisco_meraki
 
     def facts
       { 'operatingsystem' => 'meraki_dashboard',
+      'meraki_org_id' => @orgid,
+      'meraki_org_name' => @dapi.get_organization(@orgid)['name'],
       'meraki_license_state' => @dapi.get_license_state(@orgid) }
     end
 
