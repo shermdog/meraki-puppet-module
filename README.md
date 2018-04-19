@@ -48,7 +48,23 @@ sudo /opt/puppetlabs/bin/puppetserver gem install puppet-resource_api
 
 Usage of the module requires a Meraki Dashboard API access enabled and an API access key.  https://documentation.meraki.com/zGeneral_Administration/Other_Topics/The_Cisco_Meraki_Dashboard_API
 
-Puppet device is to be configured per Meraki Organization.  Right now you need to get the orgId outside of the module.  There should be a task soon for that.
+Puppet device is to be configured per Meraki Organization.  A list of organizations the user has access to can be gathered with the Puppet Task `ciscomeraki_dashboard::list_orgs`
+
+```
+[root@puppet-device-devel tasks]# puppet task run ciscomeraki_dashboard::list_orgs key=apikey123 -n puppet-device-devel.shermdog.local
+Starting job ...
+New job ID: 8
+Nodes: 1
+
+Started on puppet-device-devel.shermdog.local ...
+Finished on node puppet-device-devel.shermdog.local
+  status : success
+  organizations : [{"id":549236,"name":"Meraki DevNet Sandbox"},{"id":646829496481088929,"name":"SD Test"}]
+
+Job completed. 1/1 nodes succeeded.
+Duration: 2 sec
+
+```
 
 
 `vi /etc/puppetlabs/puppet/device.conf`
