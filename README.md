@@ -1,21 +1,10 @@
 
 # ciscomeraki-dashboard
 
-Welcome to your new module. A short overview of the generated parts can be found in the PDK documentation at https://puppet.com/pdk/latest/pdk_generating_modules.html .
-
-The README template below provides a starting point with details about what information to include in your README.
-
-
-
-
-
-
-
 #### Table of Contents
 
 1. [Description](#description)
 2. [Setup - The basics of getting started with ciscomeraki-dashboard](#setup)
-    * [What ciscomeraki-dashboard affects](#what-ciscomeraki-dashboard-affects)
     * [Setup requirements](#setup-requirements)
     * [Beginning with ciscomeraki-dashboard](#beginning-with-ciscomeraki-dashboard)
 3. [Usage - Configuration options and additional functionality](#usage)
@@ -25,31 +14,111 @@ The README template below provides a starting point with details about what info
 
 ## Description
 
-Start with a one- or two-sentence summary of what the module does and/or what problem it solves. This is your 30-second elevator pitch for your module. Consider including OS/Puppet version it works with.
+This Puppet module facilitates the configuration and management of Cisco Meraki via the Meraki Dashboard API and Puppet Resource API + Puppet Device.
 
-You can give more descriptive information in a second paragraph. This paragraph should answer the questions: "What does this module *do*?" and "Why would I use it?" If your module has a range of functionality (installation, configuration, management, etc.), this is the time to mention it.
+Current capabilities of the module are limited in scope, but the desire is to gain functionality via community contribution... hint. hint.
 
 ## Setup
 
-### What ciscomeraki-dashboard affects **OPTIONAL**
+### Setup Requirements
 
-If it's obvious what your module touches, you can skip this section. For example, folks can probably figure out that your mysql_instance module affects their MySQL instances.
+Use of this module requires Puppet >= 4.10.x (although  >= 5.3.6 is suggested) and the following 
 
-If there's more that they should know about, though, this is the place to mention:
+#### Agent (Puppet Device)
+[Puppet Resource API](https://github.com/puppetlabs/puppet-resource_api)  
+Resource API can be installed with Puppet via the [puppetlabs/resource_api module](https://forge.puppet.com/puppetlabs/resource_api) and `resource_api::agent` class or manually via
+```shell
+sudo /opt/puppetlabs/puppet/bin/gem install puppet-resource_api
+```
 
-* Files, packages, services, or operations that the module will alter, impact, or execute.
-* Dependencies that your module automatically installs.
-* Warnings or other important notices.
+[Meraki dashboard-api](https://rubygems.org/gems/dashboard-api)
+manually via
+```shell
+sudo /opt/puppetlabs/puppet/bin/gem install dashboard-api
+```
 
-### Setup Requirements **OPTIONAL**
-
-If your module requires anything extra before setting up (pluginsync enabled, another module, etc.), mention it here.
-
-If your most recent release breaks compatibility or requires particular steps for upgrading, you might want to include an additional "Upgrading" section here.
+#### Master
+[Puppet Resource API](https://github.com/puppetlabs/puppet-resource_api)  
+Resource API can be installed with Puppet via the [puppetlabs/resource_api module](https://forge.puppet.com/puppetlabs/resource_api) and `resource_api::server` class or manually via
+```shell
+sudo /opt/puppetlabs/bin/puppetserver gem install puppet-resource_api
+```
 
 ### Beginning with ciscomeraki-dashboard
 
-The very basic steps needed for a user to get the module up and running. This can include setup steps, if necessary, or it can be an example of the most basic use of the module.
+Usage of the module requires a Meraki Dashboard API access enabled and an API access key.  https://documentation.meraki.com/zGeneral_Administration/Other_Topics/The_Cisco_Meraki_Dashboard_API
+
+Puppet device is to be configured per Meraki Organization.  Right now you need to get the orgId outside of the module.  There should be a task soon for that.
+
+
+`vi /etc/puppetlabs/puppet/device.conf`
+```INI
+[meraki-devnet-org]             # Set to desired name
+  type cisco_meraki             # Required setting - do not change
+  url file:///root/meraki.yaml  # Path to HOCON file containing API Key and orgId
+```
+`vi /root/meraki.yaml`
+```
+
+default{
+  node {
+    dashboard_org_id = 123456
+    dashboard_api_key = apikey789
+  }
+}
+
+```
+
+Puppet Device nodes require a signed certificate from the master (just like an Agent).  Add some notes here about that.
+
+By default Puppet Device will process all nodes configured in device.conf.  Output by default is suppressed, so include `-v` for interactive runs.
+```shell
+/opt/puppetlabs/puppet/bin/puppet device -v
+```
+
+Individual nodes (organizations) can be specified
+```shell
+/opt/puppetlabs/puppet/bin/puppet device -v --target meraki-devnet-org
+```
+
+Current administrators can be returned interactively as Puppet code
+```shell
+/opt/puppetlabs/puppet/bin/puppet device -v --target meraki-devnet-org --resource meraki_admin
+```
+
+Current administrators can be returned interactively as Puppet code and filtered by email
+```shell
+[root@puppet-device-devel ~]# /opt/puppetlabs/puppet/bin/puppet device -v --target meraki-devnet-org --resource meraki_admin shermdog@puppet.com
+Info: retrieving resource: meraki_admin from meraki-devnet-org at file:///etc/puppetlabs/code/environments/production/meraki.yaml
+meraki_admin { "shermdog@puppet.com": 
+  fullname => 'Rick Sherman',
+  ensure => 'present',
+# id => '646829496481137785', # Read Only
+  orgaccess => 'full',
+  networks => [
+  {
+    'id' => 'L_646829496481099051',
+    'access' => 'full'
+  },
+  {
+    'id' => 'L_646829496481095933',
+    'access' => 'full'
+  },
+  {
+    'id' => 'N_646829496481143399',
+    'access' => 'full'
+  }],
+  tags => [
+  {
+    'tag' => 'Sandbox',
+    'access' => 'full'
+  },
+  {
+    'tag' => 'branch',
+    'access' => 'full'
+  }],
+}
+```
 
 ## Usage
 
@@ -75,7 +144,3 @@ This is where you list OS compatibility, version compatibility, etc. If there ar
 ## Development
 
 Since your module is awesome, other users will want to play with it. Let them know what the ground rules for contributing are.
-
-## Release Notes/Contributors/Etc. **Optional**
-
-If you aren't using changelog, put your release notes here (though you should consider using changelog). You can also add any additional sections you feel are necessary or important to include here. Please use the `## ` header.
