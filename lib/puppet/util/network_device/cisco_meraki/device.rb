@@ -1,4 +1,3 @@
-require 'dashboard-api'
 require 'uri'
 require 'hocon'
 require 'hocon/config_syntax'
@@ -11,6 +10,7 @@ module Puppet::Util::NetworkDevice::Cisco_meraki
     attr_reader :dapi, :orgid
 
     def initialize(url, _options = {})
+      require 'dashboard-api'
       @url = URI.parse(url)
       raise "Unexpected url '#{url}' found. Only file:/// URLs for configuration supported at the moment." unless @url.scheme == 'file'
 
