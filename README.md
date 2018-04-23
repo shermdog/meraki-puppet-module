@@ -69,9 +69,9 @@ Duration: 2 sec
 
 `vi /etc/puppetlabs/puppet/device.conf`
 ```INI
-[meraki-devnet-org]             # Set to desired name
-  type cisco_meraki             # Required setting - do not change
-  url file:///root/meraki.yaml  # Path to HOCON file containing API Key and orgId
+[meraki-devnet-org]
+  type meraki_organization
+  url file:///root/meraki.yaml
 ```
 `vi /root/meraki.yaml`
 ```
