@@ -28,23 +28,21 @@ class Puppet::Provider::MerakiAdmin::MerakiAdmin
   end
 
   def get(context)
-    instances = []
     admins = context.device.dapi.list_admins(context.device.orgid)
 
     return [] if admins.nil?
 
-    admins.each do |admin|
-      instances << { fullname: admin['name'],
-                     ensure: 'present',
-                     email: admin['email'],
-                     id: admin['id'],
-                     orgaccess: admin['orgAccess'],
-                     networks: admin['networks'],
-                     tags: admin['tags']
-                   }
+    admins.map do |admin|
+      {
+        fullname: admin['name'],
+        ensure: 'present',
+        email: admin['email'],
+        id: admin['id'],
+        orgaccess: admin['orgAccess'],
+        networks: admin['networks'],
+        tags: admin['tags']
+      }
     end
-
-    instances
   end
 
   def create(context, name, should)
