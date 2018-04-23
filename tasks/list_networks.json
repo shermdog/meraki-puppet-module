@@ -1,0 +1,15 @@
+{
+  "description": "List the organizations that the user has privileges on",
+  "supports_noop": false,
+  "input_method": "stdin",
+  "parameters": {
+    "key": {
+      "description": "API Key for Meraki Dashboard",
+      "type": "String[1]"
+    },
+    "organization": {
+      "description": "Organization ID",
+      "type": "Optional[String[1]]"
+    }
+  }
+}
