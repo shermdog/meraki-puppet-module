@@ -13,7 +13,7 @@ Puppet::ResourceApi.register_type(
     },
     ensure:       {
       type:     'Enum[present, absent]',
-      desc:     'The email of the dashboard administrator. This attribute can not be updated.',
+      desc:     'Resource is ensurable (present, absent).',
       default:    'present',
     },
     fullname:         {

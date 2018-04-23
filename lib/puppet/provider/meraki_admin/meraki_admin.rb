@@ -1,7 +1,7 @@
 require 'puppet/resource_api'
 require 'puppet/resource_api/simple_provider'
 
-require_relative('../../util/network_device/cisco_meraki/device')
+require_relative('../../util/network_device/meraki_organization/device')
 
 # Implementation for the meraki_admin type using the Resource API.
 class Puppet::Provider::MerakiAdmin::MerakiAdmin
