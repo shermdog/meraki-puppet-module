@@ -1,12 +1,12 @@
 
-# ciscomeraki-dashboard
+# ciscomeraki-meraki
 
 #### Table of Contents
 
 1. [Description](#description)
-2. [Setup - The basics of getting started with ciscomeraki-dashboard](#setup)
+2. [Setup - The basics of getting started with ciscomeraki-meraki](#setup)
     * [Setup requirements](#setup-requirements)
-    * [Beginning with ciscomeraki-dashboard](#beginning-with-ciscomeraki-dashboard)
+    * [Beginning with ciscomeraki-meraki](#beginning-with-ciscomeraki-meraki)
 3. [Usage - Configuration options and additional functionality](#usage)
 4. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
 5. [Limitations - OS compatibility, etc.](#limitations)
@@ -44,14 +44,14 @@ Resource API can be installed with Puppet via the [puppetlabs/resource_api modul
 sudo /opt/puppetlabs/bin/puppetserver gem install puppet-resource_api
 ```
 
-### Beginning with ciscomeraki-dashboard
+### Beginning with ciscomeraki-meraki
 
 Usage of the module requires a Meraki Dashboard API access enabled and an API access key.  https://documentation.meraki.com/zGeneral_Administration/Other_Topics/The_Cisco_Meraki_Dashboard_API
 
-Puppet device is to be configured per Meraki Organization.  A list of organizations the user has access to can be gathered with the Puppet Task `ciscomeraki_dashboard::list_orgs`
+Puppet device is to be configured per Meraki Organization.  A list of organizations the user has access to can be gathered with the Puppet Task `meraki::list_orgs`
 
 ```
-[root@puppet-device-devel tasks]# puppet task run ciscomeraki_dashboard::list_orgs key=apikey123 -n puppet-device-devel.shermdog.local
+[root@puppet-device-devel tasks]# puppet task run meraki::list_orgs key=apikey123 -n puppet-device-devel.shermdog.local
 Starting job ...
 New job ID: 8
 Nodes: 1

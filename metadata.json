@@ -1,10 +1,10 @@
 {
-  "name": "ciscomeraki-dashboard",
+  "name": "ciscomeraki-meraki",
   "version": "0.1.0",
   "author": "Rick Sherman <shermdog@puppet.com>",
   "summary": "Management of resources in Cisco Meraki Dashboard",
   "license": "Apache-2.0",
-  "source": "https://github.com/shermdog/ciscomeraki-dashboard",
+  "source": "https://github.com/shermdog/ciscomeraki-meraki",
   "dependencies": [
 
   ],
