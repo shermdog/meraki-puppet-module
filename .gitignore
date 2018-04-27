@@ -21,3 +21,4 @@
 /convert_report.txt
 .DS_Store
 .ruby-version
+.rspec_status

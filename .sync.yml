@@ -3,6 +3,7 @@
 .gitignore:
   paths:
   - .ruby-version
+  - .rspec_status
 Gemfile:
   optional:
     ':default':
@@ -10,7 +11,6 @@ Gemfile:
       - gem: 'puppet-resource_api'
     ':development':
       - gem: 'codecov'
-      - gem: 'puppet-resource_api'
       - gem: 'simplecov-console'
 spec/spec_helper.rb:
   mock_with: ':rspec'

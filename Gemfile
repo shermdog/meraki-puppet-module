@@ -33,7 +33,6 @@ group :development do
   gem "puppet-module-win-default-r#{minor_version}",   require: false, platforms: [:mswin, :mingw, :x64_mingw]
   gem "puppet-module-win-dev-r#{minor_version}",       require: false, platforms: [:mswin, :mingw, :x64_mingw]
   gem "codecov",                                       require: false
-  gem "puppet-resource_api",                           require: false
   gem "simplecov-console",                             require: false
 end
 group :default do
