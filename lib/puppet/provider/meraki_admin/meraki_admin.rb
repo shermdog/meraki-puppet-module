@@ -7,7 +7,6 @@ require_relative('../../util/network_device/meraki_organization/device')
 class Puppet::Provider::MerakiAdmin::MerakiAdmin
   def set(context, changes)
     changes.each do |name, change|
-
       is = change[:is].nil? ? { name: name, ensure: 'absent' } : change[:is]
       should = change[:should].nil? ? { name: name, ensure: 'absent' } : change[:should]
 
@@ -40,12 +39,12 @@ class Puppet::Provider::MerakiAdmin::MerakiAdmin
         id: admin['id'],
         orgaccess: admin['orgAccess'],
         networks: admin['networks'],
-        tags: admin['tags']
+        tags: admin['tags'],
       }
     end
   end
 
-  def create(context, name, should)
+  def create(context, _name, should)
     # convert puppet attr names to meraki api names
     should.delete(:ensure)
     should[:name] = should.delete(:fullname)
@@ -54,7 +53,7 @@ class Puppet::Provider::MerakiAdmin::MerakiAdmin
     context.device.dapi.add_admin(context.device.orgid, should)
   end
 
-  def update(context, name, id, should)
+  def update(context, _name, id, should)
     # convert puppet attr names to meraki api names
     should.delete(:ensure)
     should[:name] = should.delete(:fullname)
