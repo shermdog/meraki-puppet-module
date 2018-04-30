@@ -47,6 +47,7 @@ class Puppet::Provider::MerakiAdmin::MerakiAdmin
 
   def create(context, name, should)
     # convert puppet attr names to meraki api names
+    should.delete(:ensure)
     should[:name] = should.delete(:fullname)
     should[:orgAccess] = should.delete(:orgaccess)
 
