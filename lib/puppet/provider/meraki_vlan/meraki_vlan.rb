@@ -22,9 +22,7 @@ class Puppet::Provider::MerakiVlan::MerakiVlan < Puppet::ResourceApi::SimpleProv
         dnsnameservers: vlan['dnsNameservers'],
         vpnnatsubnet: vlan['vpnNatSubnet']
       }.delete_if { |_k, v| v.nil? }
-    # require 'pry'; binding.pry
     end
-    # require 'pry'; binding.pry
     instances
   end
 
@@ -47,7 +45,6 @@ class Puppet::Provider::MerakiVlan::MerakiVlan < Puppet::ResourceApi::SimpleProv
   end
   
   def update(context, id, should)
-    # require 'pry'; binding.pry
     mungePuppet(should)
     context.device.dapi.update_vlan(context.device.networkid, id, should)
   end

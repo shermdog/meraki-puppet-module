@@ -116,7 +116,7 @@ RSpec.describe Puppet::Provider::MerakiAdmin::MerakiAdmin do
   describe '#get' do
     context 'get resource instance' do
       it 'calls dashboard_api and returns instance with puppet attributes' do
-        # Expect dashboard_api will be called with update_admin and munged values
+        # Expect dashboard_api will be called with list_admins and orgId
         expect(dapi).to receive(:list_admins).with('1234')
           .once.and_return([{
                              'name' => 'Rick Sherman',
@@ -141,6 +141,7 @@ RSpec.describe Puppet::Provider::MerakiAdmin::MerakiAdmin do
     end
   end
 
+  # Test the create function of the provider
   describe '#create' do
     context 'when the resource is created' do
       it 'create munges values and calls add_admin' do
@@ -184,6 +185,7 @@ RSpec.describe Puppet::Provider::MerakiAdmin::MerakiAdmin do
     end
   end
 
+  # Test the delete function of the provider
   describe '#delete' do
     context 'when resource is to be deleted' do
       it 'delete calls revoke_admin with proper attributes' do
