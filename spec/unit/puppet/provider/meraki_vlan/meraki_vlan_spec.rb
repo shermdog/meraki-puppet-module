@@ -26,10 +26,10 @@ RSpec.describe Puppet::Provider::MerakiVlan::MerakiVlan do
     end
   end
 
-  # Test the mungePuppet function of the provider
-  describe '#mungePuppet' do
+  # Test the munge_puppet function of the provider
+  describe '#munge_puppet' do
     it 'munges data passed in' do
-      expect(provider.mungePuppet(
+      expect(provider.munge_puppet(
                id: '40',
                description: 'test',
                subnet: '10.0.40.0/24',

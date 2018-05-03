@@ -24,16 +24,16 @@ module Puppet::Util::NetworkDevice::Meraki_network
       network = dapi.get_single_network(@networkid)
       @orgid = network['organizationId']
       { 'operatingsystem' => 'meraki_network',
-      'meraki_network' => network,
-      'meraki_network_id' => @networkid,
-      'meraki_network_name' => network['name'],
-      'meraki_network_organizationid' => network['organizationId'],
-      'meraki_network_tags' => network['tags'],
-      'meraki_network_timezone' => network['timeZone'],
-      'meraki_network_type' => network['type'],
-      'meraki_org_id' => @orgid,
-      'meraki_org_name' => @dapi.get_organization(@orgid)['name'],
-      'meraki_license_state' => @dapi.get_license_state(@orgid) }
+        'meraki_network' => network,
+        'meraki_network_id' => @networkid,
+        'meraki_network_name' => network['name'],
+        'meraki_network_organizationid' => network['organizationId'],
+        'meraki_network_tags' => network['tags'],
+        'meraki_network_timezone' => network['timeZone'],
+        'meraki_network_type' => network['type'],
+        'meraki_org_id' => @orgid,
+        'meraki_org_name' => @dapi.get_organization(@orgid)['name'],
+        'meraki_license_state' => @dapi.get_license_state(@orgid) }
     end
 
     def config

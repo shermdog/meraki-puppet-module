@@ -13,7 +13,6 @@ begin
   output['status'] = 'success'
   puts(output.to_json)
   exit 0
-
 rescue RuntimeError => e
   puts({ status: 'failure', error: e.message }.to_json)
   exit 1

@@ -22,9 +22,9 @@ module Puppet::Util::NetworkDevice::Meraki_organization
 
     def facts
       { 'operatingsystem' => 'meraki_organization',
-      'meraki_org_id' => @orgid,
-      'meraki_org_name' => @dapi.get_organization(@orgid)['name'],
-      'meraki_license_state' => @dapi.get_license_state(@orgid) }
+        'meraki_org_id' => @orgid,
+        'meraki_org_name' => @dapi.get_organization(@orgid)['name'],
+        'meraki_license_state' => @dapi.get_license_state(@orgid) }
     end
 
     def config
