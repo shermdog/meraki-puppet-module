@@ -14,7 +14,7 @@ RSpec.describe Puppet::Util::NetworkDevice::Meraki_organization::Device do
     it 'device connects with valid HOCON' do
       allow(File).to receive(:exist?).and_return true
       expect(Hocon).to receive(:load).and_return('default' => { 'node' => { 'dashboard_org_id' => 'abc1234', 'dashboard_api_key' => 'xyz5678' } })
-      Puppet.expects(:debug).with 'Trying to connect to Meraki Dashboard with org id abc1234'
+      expect(Puppet).to receive(:debug).with('Trying to connect to Meraki Dashboard with org id abc1234')
       expect(DashboardAPI).to receive(:new).with 'xyz5678'
       device.device('file:///test.conf')
     end
@@ -26,7 +26,7 @@ RSpec.describe Puppet::Util::NetworkDevice::Meraki_organization::Device do
     it 'device returns facts' do
       allow(File).to receive(:exist?).and_return true
       expect(Hocon).to receive(:load).and_return('default' => { 'node' => { 'dashboard_org_id' => 'abc1234', 'dashboard_api_key' => 'xyz5678' } })
-      Puppet.expects(:debug).with 'Trying to connect to Meraki Dashboard with org id abc1234'
+      expect(Puppet).to receive(:debug).with('Trying to connect to Meraki Dashboard with org id abc1234')
       expect(DashboardAPI).to receive(:new).with('xyz5678').and_return(dapi)
       expect(dapi).to receive(:get_organization).with('abc1234').and_return('name' => 'test')
       expect(dapi).to receive(:get_license_state).with('abc1234').and_return(status: 'OK')
