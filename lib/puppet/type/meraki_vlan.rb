@@ -46,5 +46,5 @@ Puppet::ResourceApi.register_type(
       desc:     'The DNS nameservers used for DHCP responses, either "upstream_dns", "google_dns", "opendns", or a newline seperated string of IP addresses or domain names.  Can be removed via \'unset\'',
     },
   },
-  features: ['remote_resource'],
+  features: ['canonicalize', 'remote_resource'],
 )

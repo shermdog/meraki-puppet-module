@@ -18,12 +18,20 @@ class Puppet::Provider::MerakiVlan::MerakiVlan < Puppet::ResourceApi::SimpleProv
         subnet: vlan['subnet'],
         applianceip: vlan['applianceIp'],
         fixedipassignments: !vlan['fixedIpAssignments'].empty? ? vlan['fixedIpAssignments'] : nil,
-        reservedipranges: !vlan['reservedIpRanges'].empty? ? vlan['reservedIpRanges'] : nil,
+        reservedipranges: !vlan['reservedIpRanges'].empty? ? vlan['reservedIpRanges'].sort_by { |k| k['start'] }.sort_by { |k| k['end'] } : nil,
         dnsnameservers: vlan['dnsNameservers'],
         vpnnatsubnet: vlan['vpnNatSubnet'],
       }.delete_if { |_k, v| v.nil? }
     end
     instances
+  end
+
+  # The order of the arrays do not matter, canonicalize them so users can specify them in any order
+  # canonicalize is called after get and before set
+  def canonicalize(_context, resources)
+    resources.each do |r|
+      r[:reservedipranges].sort_by! { |k| k['start'] }.sort_by! { |k| k['end'] } if r[:reservedipranges]
+    end
   end
 
   def munge_puppet(should)
