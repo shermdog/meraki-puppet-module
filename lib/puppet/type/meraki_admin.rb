@@ -38,5 +38,5 @@ Puppet::ResourceApi.register_type(
       desc:     'The list of tags that the dashboard administrator has privileges on.  Contains the name of the tag and access privilege of the dashboard administrator on the tag',
     },
   },
-  features: ['remote_resource'],
+  features: ['canonicalize', 'remote_resource'],
 )

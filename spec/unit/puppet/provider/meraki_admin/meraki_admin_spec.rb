@@ -128,6 +128,7 @@ RSpec.describe Puppet::Provider::MerakiAdmin::MerakiAdmin do
                            }])
 
         # Call get with context
+        # Ensure that array values are returned sorted
         expect(provider.get(context)).to eq([{
                                               fullname: 'Rick Sherman',
                                               ensure: 'present',
@@ -172,7 +173,9 @@ RSpec.describe Puppet::Provider::MerakiAdmin::MerakiAdmin do
                                                     email: 'shermdog@puppet.com',
                                                     id: '78910',
                                                     name: 'Rick Sherman',
-                                                    orgAccess: 'read-only').once
+                                                    orgAccess: 'read-only',
+                                                    networks: [{ 'id' => '123', 'access' => 'full' }, { 'id' => '567', 'access' => 'read-only' }],
+                                                    tags: [{ 'tag' => 'Sandbox', 'access' => 'full' }, { 'tag' => 'branch', 'access' => 'full' }]).once
 
         # Call update with Puppet type values
         provider.update(context, 'shermdog@puppet.com', '78910',
@@ -180,7 +183,9 @@ RSpec.describe Puppet::Provider::MerakiAdmin::MerakiAdmin do
                         ensure: 'present',
                         fullname: 'Rick Sherman',
                         id: '78910',
-                        orgaccess: 'read-only')
+                        orgaccess: 'read-only',
+                        networks: [{ 'id' => '123', 'access' => 'full' }, { 'id' => '567', 'access' => 'read-only' }],
+                        tags: [{ 'tag' => 'Sandbox', 'access' => 'full' }, { 'tag' => 'branch', 'access' => 'full' }])
       end
     end
   end
@@ -193,6 +198,29 @@ RSpec.describe Puppet::Provider::MerakiAdmin::MerakiAdmin do
 
         # Call update with Puppet type values
         provider.delete(context, '78910')
+      end
+    end
+  end
+
+  # Test the canonicalize function of the provider
+  # canonicalize is called outside of the provider.  After get and before set
+  describe '#canonicalize' do
+    context 'munges the resources as expected' do
+      it 'sorts the arrays by hash key values' do
+        expect(provider.canonicalize(context, [{ fullname: 'Rick Sherman',
+                                                 ensure: 'present',
+                                                 email: 'shermdog@puppet.com',
+                                                 id: '78910',
+                                                 orgaccess: 'full',
+                                                 networks: [{ 'id' => '567', 'access' => 'read-only' }, { 'id' => '123', 'access' => 'full' }],
+                                                 tags: [{ 'tag' => 'branch', 'access' => 'full' }, { 'tag' => 'Sandbox', 'access' => 'full' }] }]))
+          .to eq([{ fullname: 'Rick Sherman',
+                    ensure: 'present',
+                    email: 'shermdog@puppet.com',
+                    id: '78910',
+                    orgaccess: 'full',
+                    networks: [{ 'id' => '123', 'access' => 'full' }, { 'id' => '567', 'access' => 'read-only' }],
+                    tags: [{ 'tag' => 'Sandbox', 'access' => 'full' }, { 'tag' => 'branch', 'access' => 'full' }] }])
       end
     end
   end

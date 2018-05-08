@@ -38,8 +38,9 @@ class Puppet::Provider::MerakiAdmin::MerakiAdmin
         email: admin['email'],
         id: admin['id'],
         orgaccess: admin['orgAccess'],
-        networks: admin['networks'],
-        tags: admin['tags'],
+        # Order of this array does not matter to the Meraki API, sort to match canonicalize
+        networks: admin['networks'].sort_by { |k| k['id'] },
+        tags: admin['tags'].sort_by { |k| k['tag'] },
       }
     end
   end
@@ -64,5 +65,14 @@ class Puppet::Provider::MerakiAdmin::MerakiAdmin
 
   def delete(context, id)
     context.device.dapi.revoke_admin(context.device.orgid, id)
+  end
+
+  # The order of the arrays do not matter, canonicalize them so users can specify them in any order
+  # canonicalize is called after get and before set
+  def canonicalize(_context, resources)
+    resources.each do |r|
+      r[:networks].sort_by! { |k| k['id'] } if r[:networks]
+      r[:tags].sort_by! { |k| k['tag'] } if r[:tags]
+    end
   end
 end
