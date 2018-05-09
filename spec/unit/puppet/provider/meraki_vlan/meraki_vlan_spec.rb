@@ -97,7 +97,25 @@ RSpec.describe Puppet::Provider::MerakiVlan::MerakiVlan do
                subnet: '10.0.40.0/24',
                applianceIp: '10.0.40.1',
                fixedIpAssignments: {},
-               reservedIpRanges: [],
+               reservedIpRanges: {},
+               dnsNameservers: 'upstream_dns')
+    end
+
+    it 'converts reservedipranges empty array to empty hash' do
+      expect(provider.munge_puppet(
+               id: '40',
+               description: 'test',
+               subnet: '10.0.40.0/24',
+               applianceip: '10.0.40.1',
+               fixedipassignments: {},
+               reservedipranges: [],
+               dnsnameservers: 'upstream_dns',
+      )).to eq(id: '40',
+               name: 'test',
+               subnet: '10.0.40.0/24',
+               applianceIp: '10.0.40.1',
+               fixedIpAssignments: {},
+               reservedIpRanges: {},
                dnsNameservers: 'upstream_dns')
     end
   end

@@ -207,7 +207,7 @@ meraki_vlan { "99":
 ## Limitations
 
 ### meraki_vlan
-The Meraki API currently does not allow for the removal of `reservedIpRanges` and `fixedIpAssignments` once they have been set.  Puppet will still try to remove them.
+The Meraki API currently does not allow for the removal of `fixedIpAssignments` once they have been set.  Puppet will still try to remove them.
 
 ## Development
 

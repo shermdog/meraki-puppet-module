@@ -53,7 +53,8 @@ class Puppet::Provider::MerakiVlan::MerakiVlan < Puppet::ResourceApi::SimpleProv
     should[:dnsNameservers] = should.delete(:dnsnameservers)
     # convert unset values
     should[:fixedIpAssignments] = {} if should[:fixedIpAssignments] == 'unset'
-    should[:reservedIpRanges] = [] if should[:reservedIpRanges] == 'unset'
+    # even though we are using arrays in Puppet the Meraki API uses {} to delete these
+    should[:reservedIpRanges] = {} if should[:reservedIpRanges] == 'unset' || should[:reservedIpRanges] == []
     should
   end
 
