@@ -17,8 +17,8 @@ class Puppet::Provider::MerakiVlan::MerakiVlan < Puppet::ResourceApi::SimpleProv
         description: vlan['name'],
         subnet: vlan['subnet'],
         applianceip: vlan['applianceIp'],
-        fixedipassignments: !vlan['fixedIpAssignments'].empty? ? vlan['fixedIpAssignments'] : nil,
-        reservedipranges: !vlan['reservedIpRanges'].empty? ? vlan['reservedIpRanges'].sort_by { |k| k['start'] }.sort_by { |k| k['end'] } : nil,
+        fixedipassignments: !vlan['fixedIpAssignments'].empty? ? vlan['fixedIpAssignments'] : {},
+        reservedipranges: !vlan['reservedIpRanges'].empty? ? vlan['reservedIpRanges'].sort_by { |k| k['start'] }.sort_by { |k| k['end'] } : [],
         dnsnameservers: vlan['dnsNameservers'],
         vpnnatsubnet: vlan['vpnNatSubnet'],
       }.delete_if { |_k, v| v.nil? }
@@ -30,7 +30,14 @@ class Puppet::Provider::MerakiVlan::MerakiVlan < Puppet::ResourceApi::SimpleProv
   # canonicalize is called after get and before set
   def canonicalize(_context, resources)
     resources.each do |r|
-      r[:reservedipranges].sort_by! { |k| k['start'] }.sort_by! { |k| k['end'] } if r[:reservedipranges]
+      if r[:reservedipranges]
+        if r[:reservedipranges] == 'unset'
+          r[:reservedipranges] = []
+        else
+          r[:reservedipranges].sort_by! { |k| k['start'] }.sort_by! { |k| k['end'] }
+        end
+      end
+      r[:fixedipassignments] = {} if r[:fixedipassignments] && r[:fixedipassignments] == 'unset'
     end
   end
 
@@ -44,6 +51,9 @@ class Puppet::Provider::MerakiVlan::MerakiVlan < Puppet::ResourceApi::SimpleProv
     should[:reservedIpRanges] = should.delete(:reservedipranges) if should[:reservedipranges]
     should[:vpnNatSubnet] = should.delete(:vpnnatsubnet) if should[:vpnnatsubnet]
     should[:dnsNameservers] = should.delete(:dnsnameservers)
+    # convert unset values
+    should[:fixedIpAssignments] = {} if should[:fixedIpAssignments] == 'unset'
+    should[:reservedIpRanges] = [] if should[:reservedIpRanges] == 'unset'
     should
   end
 

@@ -155,7 +155,8 @@ Users need a complete list of your module's classes, types, defined types provid
 
 ## Limitations
 
-This is where you list OS compatibility, version compatibility, etc. If there are Known Issues, you might want to include them under their own heading here.
+### meraki_vlan
+The Meraki API currently does not allow for the removal of `reservedIpRanges` and `fixedIpAssignments` once they have been set.  Puppet will still try to remove them.
 
 ## Development
 

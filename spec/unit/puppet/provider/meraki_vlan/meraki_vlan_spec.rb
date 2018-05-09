@@ -32,10 +32,6 @@ RSpec.describe Puppet::Provider::MerakiVlan::MerakiVlan do
     context 'munges the resources as expected' do
       it 'sorts the arrays by hash key values' do
         expect(provider.canonicalize(context, [{ id: '40',
-                                                 ensure: 'present',
-                                                 description: 'test',
-                                                 subnet: '10.0.40.0/24',
-                                                 applianceip: '10.0.40.1',
                                                  fixedipassignments: {
                                                    '52:54:00:e3:5d:3d' => { 'ip' => '10.0.40.54', 'name' => 'test_cliane' },
                                                    '52:54:00:e3:5d:4d' => { 'ip' => '10.0.40.53', 'name' => 'testmoar' },
@@ -43,14 +39,8 @@ RSpec.describe Puppet::Provider::MerakiVlan::MerakiVlan do
                                                  reservedipranges: [
                                                    { 'start' => '10.0.40.70', 'end' => '10.0.40.75', 'comment' => 'test 3' },
                                                    { 'start' => '10.0.40.50', 'end' => '10.0.40.59', 'comment' => 'test 1' },
-                                                 ],
-                                                 dnsnameservers: 'upstream_dns',
-                                                 vpnnatsubnet: '10.0.40.0/24' }]))
+                                                 ] }]))
           .to eq([{ id: '40',
-                    ensure: 'present',
-                    description: 'test',
-                    subnet: '10.0.40.0/24',
-                    applianceip: '10.0.40.1',
                     fixedipassignments: {
                       '52:54:00:e3:5d:3d' => { 'ip' => '10.0.40.54', 'name' => 'test_cliane' },
                       '52:54:00:e3:5d:4d' => { 'ip' => '10.0.40.53', 'name' => 'testmoar' },
@@ -58,16 +48,22 @@ RSpec.describe Puppet::Provider::MerakiVlan::MerakiVlan do
                     reservedipranges: [
                       { 'start' => '10.0.40.50', 'end' => '10.0.40.59', 'comment' => 'test 1' },
                       { 'start' => '10.0.40.70', 'end' => '10.0.40.75', 'comment' => 'test 3' },
-                    ],
-                    dnsnameservers: 'upstream_dns',
-                    vpnnatsubnet: '10.0.40.0/24' }])
+                    ] }])
+      end
+      it 'handles unset' do
+        expect(provider.canonicalize(context, [{ id: '40',
+                                                 fixedipassignments: 'unset',
+                                                 reservedipranges: 'unset' }]))
+          .to eq([{ id: '40',
+                    fixedipassignments: {},
+                    reservedipranges: [] }])
       end
     end
   end
 
   # Test the munge_puppet function of the provider
   describe '#munge_puppet' do
-    it 'munges data passed in' do
+    it 'converts puppet key names to meraki' do
       expect(provider.munge_puppet(
                id: '40',
                description: 'test',
@@ -85,6 +81,24 @@ RSpec.describe Puppet::Provider::MerakiVlan::MerakiVlan do
                reservedIpRanges: { 'start' => '10.0.40.50', 'end' => '10.0.40.59', 'comment' => 'test 1' },
                dnsNameservers: 'upstream_dns',
                vpnNatSubnet: '10.0.40.0/24')
+    end
+
+    it 'handles unset' do
+      expect(provider.munge_puppet(
+               id: '40',
+               description: 'test',
+               subnet: '10.0.40.0/24',
+               applianceip: '10.0.40.1',
+               fixedipassignments: 'unset',
+               reservedipranges: 'unset',
+               dnsnameservers: 'upstream_dns',
+      )).to eq(id: '40',
+               name: 'test',
+               subnet: '10.0.40.0/24',
+               applianceIp: '10.0.40.1',
+               fixedIpAssignments: {},
+               reservedIpRanges: [],
+               dnsNameservers: 'upstream_dns')
     end
   end
 

@@ -31,19 +31,20 @@ Puppet::ResourceApi.register_type(
     },
     fixedipassignments: {
       type:     'Optional[Variant[Enum[unset], Hash]]',
-      desc:     'The DHCP fixed IP assignments on the VLAN',
+      desc:     'The DHCP fixed IP assignments on the VLAN. Can be removed via \'unset\' or empty Hash',
     },
     reservedipranges: {
       type:     'Optional[Variant[Enum[unset], Array[Hash]]]',
-      desc:     'The DHCP reserved IP ranges on the VLAN.  Can be removed via \'unset\' or empty Hash',
+      desc:     'The DHCP reserved IP ranges on the VLAN.  Can be removed via \'unset\' or empty Array',
     },
     vpnnatsubnet: {
-      type:     'Optional[Variant[Enum[unset], String]]',
-      desc:     'The translated VPN subnet if VPN and VPN subnet translation are enabled on the VLAN. Can be removed via \'unset\' or empty Hash',
+      type:     'Optional[String]',
+      desc:     'The translated VPN subnet if VPN and VPN subnet translation are enabled on the VLAN.',
     },
     dnsnameservers: {
-      type:     'Optional[String]',
-      desc:     'The DNS nameservers used for DHCP responses, either "upstream_dns", "google_dns", "opendns", or a newline seperated string of IP addresses or domain names.  Can be removed via \'unset\'',
+      type:     'String',
+      desc:     'The DN nameservers used for DHCP responses, either "upstream_dns", "google_dns", "opendns", or a newline seperated string of IP addresses or domain names.',
+      default:  'upstream_dns',
     },
   },
   features: ['canonicalize', 'remote_resource'],
