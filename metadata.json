@@ -5,6 +5,7 @@
   "summary": "Management of resources in Cisco Meraki Dashboard",
   "license": "Apache-2.0",
   "source": "https://github.com/meraki/puppet-module",
+  "project_page": "https://create.meraki.io/build/puppet/",
   "issues_url": "https://github.com/meraki/puppet-module/issues",
   "dependencies": [
     {
