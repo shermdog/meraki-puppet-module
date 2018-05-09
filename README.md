@@ -26,7 +26,7 @@ Use of this module requires Puppet >= 4.10.x (although  >= 5.3.6 is suggested) a
 
 #### Agent (Puppet Device)
 [Puppet Resource API](https://github.com/puppetlabs/puppet-resource_api)  
-Resource API can be installed with Puppet via the [puppetlabs/resource_api module](https://forge.puppet.com/puppetlabs/resource_api) and `resource_api::agent` class or manually via
+Agent (Puppet Device) dependencies can be install with Puppet via the included `meraki` class or manually via
 ```shell
 sudo /opt/puppetlabs/puppet/bin/gem install puppet-resource_api
 ```
@@ -48,7 +48,9 @@ sudo /opt/puppetlabs/bin/puppetserver gem install puppet-resource_api
 
 Usage of the module requires a Meraki Dashboard API access enabled and an API access key.  https://documentation.meraki.com/zGeneral_Administration/Other_Topics/The_Cisco_Meraki_Dashboard_API
 
-Puppet device is to be configured per Meraki Organization.  A list of organizations the user has access to can be gathered with the Puppet Task `meraki::list_orgs`
+Puppet device is to be configured per Meraki Organization and/or Network.  A list of organizations or networks the user has access to can be gathered with the Puppet Tasks `meraki::list_orgs` and `meraki::list_networks`
+
+*Note* if using Puppet Enterprise CLI execution of Tasks requires an [access token](https://puppet.com/docs/pe/latest/rbac/rbac_token_auth_intro.html)
 
 ```
 [root@puppet-device-devel tasks]# puppet task run meraki::list_orgs key=apikey123 -n puppet-device-devel.shermdog.local
@@ -63,6 +65,20 @@ Finished on node puppet-device-devel.shermdog.local
 
 Job completed. 1/1 nodes succeeded.
 Duration: 2 sec
+```
+```
+[root@puppet-device-devel ~]# puppet task run meraki::list_networks key=apikey123 -n puppet-device-devel.shermdog.local
+Starting job ...
+New job ID: 22
+Nodes: 1
+
+Started on puppet-device-devel.shermdog.local ...
+Finished on node puppet-device-devel.shermdog.local
+  status : success
+  networks : [{"id":"L_646829496481097728","name":"Wireless 2","tags":null,"type":"combined","timeZone":"America/Los_Angeles","organizationId":"646829496481088375"},{"id":"N_686235993220589511","name":"jr","tags":null,"type":"wireless","timeZone":"America/Los_Angeles","organizationId":"646829496481088375"},{"id":"L_686235993220583318","name":"branch office","tags":null,"type":"combined","timeZone":"America/Los_Angeles","organizationId":"646829496481088375"},{"id":"L_686235993220583319","name":"DC Branch","tags":null,"type":"combined","timeZone":"America/Los_Angeles","organizationId":"646829496481088375"}]
+
+Job completed. 1/1 nodes succeeded.
+Duration: 1 sec
 
 ```
 
@@ -72,6 +88,11 @@ Duration: 2 sec
 [meraki-devnet-org]
   type meraki_organization
   url file:///root/meraki.yaml
+
+[meraki-devnet-net]
+  type meraki_network
+  url file:///root/mnet.yaml
+
 ```
 `vi /root/meraki.yaml`
 ```
@@ -84,8 +105,21 @@ default{
 }
 
 ```
+`vi /root/mnet.yaml`
+```
 
-Puppet Device nodes require a signed certificate from the master (just like an Agent).  Add some notes here about that.
+
+default{
+  node {
+    dashboard_network_id = L_5678
+    dashboard_api_key = apikey789
+  }
+}
+
+```
+
+Puppet Device nodes require a signed certificate from the master (just like an Agent).
+[Adding and removing nodes](https://puppet.com/docs/pe/latest/managing_nodes/adding_and_removing_nodes.html)
 
 By default Puppet Device will process all nodes configured in device.conf.  Output by default is suppressed, so include `-v` for interactive runs.
 ```shell
@@ -136,22 +170,39 @@ meraki_admin { "shermdog@puppet.com":
 }
 ```
 
-## Usage
-
-This section is where you describe how to customize, configure, and do the fancy stuff with your module here. It's especially helpful if you include usage examples and code samples for doing things with your module.
+Current VLANs can be returned interactively as Puppet code and filtered by ID
+```shell
+[root@puppet-device-devel ~]# puppet device -v -t meraki-devnet-net --resource meraki_vlan 99
+Info: retrieving resource: meraki_vlan from meraki-devnet-net at file:///root/mnet.yaml
+meraki_vlan { "99": 
+  ensure => 'present',
+  description => 'Managed by Puppet',
+  subnet => '10.0.99.0/24',
+  applianceip => '10.0.99.1',
+  fixedipassignments => {
+  '52:54:00:e3:5d:3d' => {
+    'ip' => '10.0.99.202',
+    'name' => 'test2'
+  }
+},
+  reservedipranges => [
+  {
+    'start' => '10.0.99.1',
+    'end' => '10.0.99.101',
+    'comment' => 'test 1'
+  },
+  {
+    'start' => '10.0.99.200',
+    'end' => '10.0.99.225',
+    'comment' => 'test 2'
+  }],
+  dnsnameservers => 'upstream_dns',
+}
+```
 
 ## Reference
 
-Users need a complete list of your module's classes, types, defined types providers, facts, and functions, along with the parameters for each. You can provide this list either via Puppet Strings code comments or as a complete list in the README Reference section.
-
-* If you are using Puppet Strings code comments, this Reference section should include Strings information so that your users know how to access your documentation.
-
-* If you are not using Puppet Strings, include a list of all of your classes, defined types, and so on, along with their parameters. Each element in this listing should include:
-
-  * The data type, if applicable.
-  * A description of what the element does.
-  * Valid values, if the data type doesn't make it obvious.
-  * Default value, if any.
+[Puppet Strings REFERENCE.md](REFERENCE.md)
 
 ## Limitations
 
@@ -160,4 +211,6 @@ The Meraki API currently does not allow for the removal of `reservedIpRanges` an
 
 ## Development
 
-Since your module is awesome, other users will want to play with it. Let them know what the ground rules for contributing are.
+This module leverages [Puppet Resource API](https://github.com/puppetlabs/puppet-specifications/blob/master/language/resource-api/README.md) and is compatible with [Puppet PDK](https://puppet.com/docs/pdk/latest/pdk.html)
+
+Additional information on contributing to the module will be forthcoming.
