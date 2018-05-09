@@ -4,9 +4,13 @@
   "author": "Rick Sherman <shermdog@puppet.com>",
   "summary": "Management of resources in Cisco Meraki Dashboard",
   "license": "Apache-2.0",
-  "source": "https://github.com/shermdog/ciscomeraki-meraki",
+  "source": "https://github.com/meraki/puppet-module",
+  "issues_url": "https://github.com/meraki/puppet-module/issues",
   "dependencies": [
-
+    {
+      "name": "puppetlabs/resource_api",
+      "version_requirement": ">= 0.2.0 < 1.0.0"
+    }
   ],
   "operatingsystem_support": [
     {
@@ -46,23 +50,9 @@
       ]
     },
     {
-      "operatingsystem": "windows",
-      "operatingsystemrelease": [
-        "2008 R2",
-        "2012 R2",
-        "10"
-      ]
-    },
-    {
       "operatingsystem": "Fedora",
       "operatingsystemrelease": [
         "25"
-      ]
-    },
-    {
-      "operatingsystem": "Darwin",
-      "operatingsystemrelease": [
-        "16"
       ]
     }
   ],
