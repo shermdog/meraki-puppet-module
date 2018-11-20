@@ -25,7 +25,7 @@ Current capabilities of the module are limited in scope, but the desire is to ga
 Use of this module requires Puppet >= 4.10.x (although  >= 5.3.6 is suggested) and the following 
 
 #### Agent (Puppet Device)
-[Puppet Resource API](https://github.com/puppetlabs/puppet-resource_api)  
+[Puppet Resource API](https://github.com/puppetlabs/puppet-resource_api) >= 1.4.0  
 Agent (Puppet Device) dependencies can be install with Puppet via the included `meraki` class or manually via
 ```shell
 sudo /opt/puppetlabs/puppet/bin/gem install puppet-resource_api
@@ -38,13 +38,15 @@ sudo /opt/puppetlabs/puppet/bin/gem install dashboard-api
 ```
 
 #### Master
-[Puppet Resource API](https://github.com/puppetlabs/puppet-resource_api)  
+[Puppet Resource API](https://github.com/puppetlabs/puppet-resource_api) (Included in Puppet 6)  
 Resource API can be installed with Puppet via the [puppetlabs/resource_api module](https://forge.puppet.com/puppetlabs/resource_api) and `resource_api::server` class or manually via
 ```shell
 sudo /opt/puppetlabs/bin/puppetserver gem install puppet-resource_api
 ```
 
 ### Beginning with ciscomeraki-meraki
+
+#### API Key
 
 Usage of the module requires a Meraki Dashboard API access enabled and an API access key.  https://documentation.meraki.com/zGeneral_Administration/Other_Topics/The_Cisco_Meraki_Dashboard_API
 
@@ -82,6 +84,9 @@ Duration: 1 sec
 
 ```
 
+#### Puppet Device
+
+To get started, create or edit `/etc/puppetlabs/puppet/device.conf`, add a section for the organization and/or network you want to manage (this will become the device's `certname`), specify a type of `meraki_organization` or `meraki_network`, and specify a `url` to a credentials file. For example:
 
 `vi /etc/puppetlabs/puppet/device.conf`
 ```INI
@@ -96,26 +101,31 @@ Duration: 1 sec
 ```
 `vi /root/meraki.yaml`
 ```
-
-default{
-  node {
+{
     dashboard_org_id = 123456
     dashboard_api_key = apikey789
-  }
 }
-
 ```
 `vi /root/mnet.yaml`
 ```
-
-
-default{
-  node {
+{
     dashboard_network_id = L_5678
     dashboard_api_key = apikey789
+}
+```
+
+Puppet device configuration can also be managed by Puppet via the [device_manager](https://forge.puppet.com/puppetlabs/device_manager) module:
+
+```Puppet
+node puppet {
+  device_manager { 'meraki-devnet-org':
+    type        => 'meraki_organization',
+    credentials => {
+      dashboard_org_id  => '123456',
+      dashboard_api_key => 'apikey789',
+    },
   }
 }
-
 ```
 
 Puppet Device nodes require a signed certificate from the master (just like an Agent).
