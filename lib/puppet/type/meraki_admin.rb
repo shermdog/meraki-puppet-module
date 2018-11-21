@@ -21,7 +21,7 @@ Puppet::ResourceApi.register_type(
       desc:     'The name of the dashboard administrator',
     },
     id:        {
-      type:     'Integer',
+      type:     'String',
       desc:     'ID of administrator',
       behaviour: :read_only,
     },
